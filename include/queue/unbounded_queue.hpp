@@ -1,10 +1,15 @@
 #pragma once
 #include "queue/queue.hpp"
 
+#include <mutex>
+#include <queue>
+
 namespace dispatcher::queue {
 
 class UnboundedQueue : public IQueue {
-    // здесь ваш код
+    std::queue<std::function<void()>> queue_;
+    mutable std::mutex mutex_;
+
 public:
     explicit UnboundedQueue(int capacity);
 

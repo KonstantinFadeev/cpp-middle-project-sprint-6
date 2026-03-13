@@ -2,8 +2,7 @@
 
 namespace dispatcher::thread_pool {
 
-ThreadPool::ThreadPool(std::shared_ptr<queue::PriorityQueue> queue, size_t thread_count)
-    : queue_(std::move(queue)) {
+ThreadPool::ThreadPool(std::shared_ptr<queue::PriorityQueue> queue, size_t thread_count) : queue_(std::move(queue)) {
     workers_.reserve(thread_count);
     for (size_t i = 0; i < thread_count; ++i) {
         workers_.emplace_back([this] { run(); });
@@ -12,7 +11,10 @@ ThreadPool::ThreadPool(std::shared_ptr<queue::PriorityQueue> queue, size_t threa
 
 void ThreadPool::run() {
     while (auto task = queue_->pop()) {
-        (*task)();
+        try {
+            (*task)();
+        } catch (...) {
+        }
     }
 }
 

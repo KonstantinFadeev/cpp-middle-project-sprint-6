@@ -30,7 +30,7 @@ std::optional<std::function<void()>> PriorityQueue::pop() {
                 return task;
             }
         }
-        if (shutdown_) {
+        if (shutdown_.load(std::memory_order_relaxed)) {
             return std::nullopt;
         }
         cv_.wait(lock);
@@ -39,7 +39,7 @@ std::optional<std::function<void()>> PriorityQueue::pop() {
 
 void PriorityQueue::shutdown() {
     std::lock_guard lock(mutex_);
-    shutdown_ = true;
+    shutdown_.store(true, std::memory_order_relaxed);
     cv_.notify_all();
 }
 

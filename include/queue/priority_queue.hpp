@@ -3,6 +3,7 @@
 #include "queue/unbounded_queue.hpp"
 #include "types.hpp"
 
+#include <atomic>
 #include <condition_variable>
 #include <functional>
 #include <map>
@@ -17,7 +18,7 @@ class PriorityQueue {
     std::map<TaskPriority, std::unique_ptr<IQueue>> queues_;
     std::mutex mutex_;
     std::condition_variable cv_;
-    bool shutdown_{false};
+    std::atomic<bool> shutdown_{false};
 
 public:
     explicit PriorityQueue(std::map<TaskPriority, QueueOptions> config);
